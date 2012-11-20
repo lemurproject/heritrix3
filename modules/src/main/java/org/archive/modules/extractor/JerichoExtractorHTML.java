@@ -33,6 +33,16 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import net.htmlparser.jericho.Attribute;
+import net.htmlparser.jericho.Attributes;
+import net.htmlparser.jericho.Element;
+import net.htmlparser.jericho.FormControl;
+import net.htmlparser.jericho.FormControlType;
+import net.htmlparser.jericho.FormField;
+import net.htmlparser.jericho.HTMLElementName;
+import net.htmlparser.jericho.Source;
+import net.htmlparser.jericho.StartTagType;
+
 import org.apache.commons.httpclient.URIException;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
@@ -42,16 +52,6 @@ import org.archive.net.UURI;
 import org.archive.net.UURIFactory;
 import org.archive.util.DevUtils;
 import org.archive.util.TextUtils;
-
-import au.id.jericho.lib.html.Attribute;
-import au.id.jericho.lib.html.Attributes;
-import au.id.jericho.lib.html.Element;
-import au.id.jericho.lib.html.FormControl;
-import au.id.jericho.lib.html.FormControlType;
-import au.id.jericho.lib.html.FormField;
-import au.id.jericho.lib.html.HTMLElementName;
-import au.id.jericho.lib.html.Source;
-import au.id.jericho.lib.html.StartTagType;
 
 /**
  * Improved link-extraction from an HTML content-body using jericho-html parser.
@@ -77,8 +77,8 @@ import au.id.jericho.lib.html.StartTagType;
 public class JerichoExtractorHTML extends ExtractorHTML {
 
     @SuppressWarnings("unused")
-    private static final long serialVersionUID = 1684681316546343615L;
-
+    private static final long serialVersionUID = 1684681316546343616L;
+    
     final private static Logger logger = 
         Logger.getLogger(JerichoExtractorHTML.class.getName());
 
@@ -369,7 +369,7 @@ public class JerichoExtractorHTML extends ExtractorHTML {
         numberOfFormsProcessed.incrementAndGet();
 
         // get all form fields
-        for (FormField formField : (Iterable<FormField>)element.findFormFields()) {
+        for (FormField formField : (Iterable<FormField>)element.getFormFields()) {
             // for each form control
             for (FormControl formControl : (Iterable<FormControl>)formField.getFormControls()) {
                 // get name of control element (and URLEncode it)
@@ -420,7 +420,7 @@ public class JerichoExtractorHTML extends ExtractorHTML {
      */
     protected void extract(CrawlURI curi, CharSequence cs) {
         Source source = new Source(cs);
-        List<Element> elements = source.findAllElements(StartTagType.NORMAL);
+        List<Element> elements = source.getAllElements(StartTagType.NORMAL);
         for (Element element : elements) {
             String elementName = element.getName();
             Attributes attributes;

@@ -1,8 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-  <name>heritrix</name>
+  <name>heritrix-engine</name>
   <comment>Heritrix is the Internet Archive&apos;s open-source, extensible, web-scale,
-  archival-quality web crawler project.</comment>
-  <projects/>
+		archival-quality web crawler project. NO_M2ECLIPSE_SUPPORT: Project files created with the maven-eclipse-plugin are not supported in M2Eclipse.</comment>
+  <projects>
+    <project>heritrix-modules</project>
+    <project>heritrix-commons</project>
+  </projects>
   <buildSpec>
     <buildCommand>
       <name>org.eclipse.jdt.core.javabuilder</name>

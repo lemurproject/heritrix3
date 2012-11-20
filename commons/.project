@@ -1,7 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-  <name>commons</name>
-  <comment>Heritrix is the Internet Archive&apos;s open-source, extensible, web-scale,
-  archival-quality web crawler project.</comment>
+  <name>heritrix-commons</name>
+  <comment>The Archive Commons Code Libraries project contains general Java utility
+		libraries, as used by the Heritrix crawler and other projects. NO_M2ECLIPSE_SUPPORT: Project files created with the maven-eclipse-plugin are not supported in M2Eclipse.</comment>
   <projects/>
   <buildSpec>
     <buildCommand>

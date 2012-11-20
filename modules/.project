@@ -1,9 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-  <name>modules</name>
+  <name>heritrix-modules</name>
   <comment>This project contains some of the configurable modules used within the
-Heritrix application to crawl the web.  The modules in this project can
-be used in applications other than Heritrix, however.</comment>
-  <projects/>
+		Heritrix application to crawl the web.  The modules in this project can
+		be used in applications other than Heritrix, however. NO_M2ECLIPSE_SUPPORT: Project files created with the maven-eclipse-plugin are not supported in M2Eclipse.</comment>
+  <projects>
+    <project>heritrix-commons</project>
+  </projects>
   <buildSpec>
     <buildCommand>
       <name>org.eclipse.jdt.core.javabuilder</name>
