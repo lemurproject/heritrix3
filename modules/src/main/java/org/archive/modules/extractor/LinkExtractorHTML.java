@@ -1,5 +1,7 @@
 package org.archive.modules.extractor;
 
+import java.io.IOException;
+import java.io.Reader;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Logger;
@@ -13,6 +15,7 @@ import net.htmlparser.jericho.StreamedSource;
 import net.htmlparser.jericho.Tag;
 
 import org.apache.commons.httpclient.URIException;
+import org.apache.commons.io.input.CharSequenceReader;
 import org.archive.modules.CrawlURI;
 import org.archive.net.UURI;
 import org.archive.net.UURIFactory;
@@ -53,40 +56,63 @@ public class LinkExtractorHTML extends ExtractorHTML {
      *            Sequence from underlying ReplayCharSequence.
      */
     protected void extract(CrawlURI curi, CharSequence cs) {
-        StreamedSource source = new StreamedSource(cs);
-
+        Reader csReader = new CharSequenceReader(cs);
+        StreamedSource source;
+        try {
+            source = new StreamedSource(csReader);
+        } catch (IOException e) {
+            logger.warning(String.format("Error extracting links from: %s - %s", curi.getURI(), e));
+            return;
+        }
+        
         for (Segment segment : source) {
-            if (segment instanceof Tag) {
-                Tag tag = (Tag) segment;
-                String tagName = tag.getName();
+            if (!(segment instanceof Tag)) {
+                segment = null;
+                continue;
+            }
+            
+            // Process the segment as a tag
+            Tag tag = (Tag) segment;
+            String tagName = tag.getName();
 
-                Attributes attributes = tag.parseAttributes();
+            Attributes attributes = tag.parseAttributes();
 
-                if (attributes == null) {
-                    continue;
-                }
+            if (attributes == null) {
+                continue;
+            }
 
-                String href = attributes.getValue("href");
-                if (href == null) {
-                    continue;
-                }
-                
-                if (tagName.equals(HTMLElementName.BASE)) {
-                    try {
-                        UURI base = UURIFactory.getInstance(href);
-                        curi.setBaseURI(base);
-                    } catch (URIException e) {
-                        logUriError(e, curi.getUURI(), href);
-                    }
-                }
-                
-                if (tagName.equals(HTMLElementName.A)
-                        || tagName.equals(HTMLElementName.LINK)) {
-
-                    processTag(curi, tagName, attributes);
+            String href = attributes.getValue("href");
+            if (href == null) {
+                continue;
+            }
+            
+            if (tagName.equals(HTMLElementName.BASE)) {
+                try {
+                    UURI base = UURIFactory.getInstance(href);
+                    curi.setBaseURI(base);
+                } catch (URIException e) {
+                    logUriError(e, curi.getUURI(), href);
                 }
             }
+            
+            if (tagName.equals(HTMLElementName.A)
+                    || tagName.equals(HTMLElementName.LINK)) {
+
+                processTag(curi, tagName, attributes);
+            }
         }
+        
+        try {
+            source.close();
+            csReader.close();
+        } catch (IOException e) {
+            logger.warning(String.format("Error extracting links for: %s - %s", curi.getURI(), e));
+        } finally {
+            source = null;
+            csReader = null;
+        }
+        
+        
     }
 
     protected void processTag(CrawlURI curi, String tagName,
